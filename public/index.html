@@ -298,119 +298,74 @@ select {
 }
 
 #stamp-menu {
-
     display:none;
-
     position:absolute;
-
     bottom:50px;
-
     right:80px;
-
     background:#252526;
-
     border:1px solid #555;
-
     padding:5px;
-
     border-radius:6px;
-
 }
 
 
 #stamp-menu button {
-
     font-size:22px;
-
     padding:5px;
-
     width:40px;
-
     height:40px;
-
 }
 
 .reply-button {
-
     padding:2px 5px;
-
     font-size:12px;
-
     margin-left:5px;
-
 }
 
 #tasks {
-
     background:#252526;
-
     border:1px solid #3c3c3c;
-
     padding:8px;
-
     margin-bottom:5px;
-
 }
 
 
 .task-header {
-
     display:flex;
-
     justify-content:space-between;
-
     align-items:center;
-
     font-weight:bold;
-
 }
 
 
 #task-list {
-
     margin-top:5px;
-
 }
 
 
 .task-item {
-
     background:#333;
-
     border:1px solid #555;
-
     padding:6px;
-
     margin-top:4px;
-
     border-radius:4px;
-
 }
 
 
 #task-form {
-
     display:flex;
-
     gap:5px;
-
     margin-top:6px;
-
 }
 
 
 #task-input {
-
     flex:1;
-
 }
 
 .task-item.completed {
-
     opacity:0.5;
-
     text-decoration:line-through;
-
 }
 
 </style>
@@ -631,16 +586,13 @@ ws.onmessage = function(event)
         return;
     }
 
-    if(data.type === "clearChat")
+    if (data.type === "clearChat")
     {
-
         document.getElementById(
             "messages"
         ).innerHTML = "";
 
-
         return;
-
     }
 
     if (data.type === "message" &&
@@ -652,33 +604,27 @@ ws.onmessage = function(event)
         new Notification("TASK Workspace",{body:"💡"});
     }
 
-    if(data.type === "editMessage")
+    if (data.type === "editMessage")
     {
-        const text =
-            document.getElementById(
-                "message-text-" + data.messageId
-            );
+        const text = document.getElementById("message-text-" + data.messageId);
 
-        if(text){
+        if (text)
+        {
             text.innerHTML =
                 data.text.replace(
                     /\n/g,
-                    "<br>"
-                );
+                    "<br>");
         }
 
         return;
     }
 
-    if(data.type === "deleteMessage")
+    if (data.type === "deleteMessage")
     {
+        const message = document.getElementById("message-" + data.messageId);
 
-        const message =
-            document.getElementById(
-                "message-" + data.messageId
-            );
-
-        if(message){
+        if (message)
+        {
             message.remove();
         }
 
@@ -687,10 +633,7 @@ ws.onmessage = function(event)
 
     if (data.type === "reaction")
     {
-        const area =
-            document.getElementById(
-                "reaction-" + data.messageId
-            );
+        const area = document.getElementById("reaction-" + data.messageId);
 
         if (area)
         {
@@ -702,6 +645,7 @@ ws.onmessage = function(event)
                     " ";
             });
         }
+
         return;
     }
 
@@ -772,13 +716,10 @@ ws.onmessage = function(event)
     if (data.type === "task")
     {
 
-        const taskList =
-            document.getElementById("task-list");
-        const task =
-            data.task;
+        const taskList = document.getElementById("task-list");
+        const task = data.task;
 
         taskList.innerHTML += `
-
             <div
                 class="task-item"
                 id="task-${task.id}"
@@ -803,50 +744,41 @@ ws.onmessage = function(event)
         return;
     }
 
-    if(data.type === "taskUpdate")
+    if (data.type === "taskUpdate")
     {
 
         const task = data.task;
+        const status = document.getElementById("task-status-" + task.id);
 
-        const status =
-            document.getElementById(
-                "task-status-" + task.id
-            );
-
-        if(status){
-            status.innerHTML =
-                getTaskStatus(
-                    task.status
-                );
+        if (status)
+        {
+            status.innerHTML = getTaskStatus(task.status);
         }
 
-        const taskElement =
-            document.getElementById(
-                "task-" + task.id
-            );
+        const taskElement = document.getElementById("task-" + task.id);
 
-        if(taskElement){
-            if(task.status === "done"){
-                taskElement.classList.add(
-                    "completed"
-                );
-            }else{
-                taskElement.classList.remove(
-                    "completed"
-                );
+        if (taskElement)
+        {
+            if (task.status === "done")
+            {
+                taskElement.classList.add("completed");
+            }
+            else
+            {
+                taskElement.classList.remove("completed");
             }
         }
 
         return;
     }
 
-    if(data.type === "file")
+    if (data.type === "file")
     {
 
         const messages = document.getElementById("messages");
         let position = "left";
 
-        if(data.id === myId)
+        if (data.id === myId)
         {
             position = "right";
         }
@@ -907,44 +839,30 @@ ws.onmessage = function(event)
     if (data.type === "stamp")
     {
 
-        const messages =
-            document.getElementById("messages");
+        const messages = document.getElementById("messages");
 
         messages.innerHTML += `
 
         <div class="message right">
-
             <div>
-
                 <div class="name">
                     ${data.name}
                 </div>
-
-
                 <div class="balloon">
-
                     <div style="font-size:40px;">
                         ${data.stamp}
                     </div>
-
-
                     <div class="time">
                         ${data.time}
                     </div>
-
                 </div>
-
             </div>
-
         </div>
-
         `;
-
 
         scrollToBottom();
 
         return;
-
     }
 
     const messages = document.getElementById("messages");
@@ -1049,7 +967,6 @@ ws.onmessage = function(event)
                         )">
                         ↩
                     </button>
-
                     ${
                         data.id === myId
                         ?
@@ -1072,9 +989,7 @@ ws.onmessage = function(event)
                         :
                         ""
                     }
-
                 </div>
-
             </div>
         </div>
     </div>
@@ -1108,17 +1023,13 @@ function sendMessage()
         return;
     }
 
-    if(editTarget)
+    if (editTarget)
     {
 
         ws.send(JSON.stringify({
-
             type:"editMessage",
-
             messageId:editTarget,
-
             text:input.trim()
-
         }));
 
         editTarget = null;
@@ -1132,7 +1043,6 @@ function sendMessage()
     ws.send(JSON.stringify({
 
         type:"message",
-
         text:input.trim(),
 
         replyTo:
@@ -1365,45 +1275,43 @@ function reaction(messageId, emoji)
     }));
 }
 
-function clearChat(){
-
+function clearChat()
+{
     if (!confirm("チャット履歴を削除しますか？"))
     {
         return;
     }
 
     ws.send(JSON.stringify({
-
         type:"clearChat"
-
     }));
 
 }
 
-function sendStamp(stamp){
-
+function sendStamp(stamp)
+{
     const input = document.getElementById("input");
     input.value += stamp;
     autoResize(input);
     input.focus();
-
 }
 
-function toggleStamp(){
-
+function toggleStamp()
+{
     const menu = document.getElementById("stamp-menu");
 
     if (menu.style.display === "block")
     {
         menu.style.display="none";
     }
-    else {
+    else 
+    {
         menu.style.display="block";
     }
 }
 
-function replyMessage(id,name,text){
-
+function replyMessage(id,name,text)
+{
     replyTarget = {
         messageId:id,
         name:name,
@@ -1411,15 +1319,12 @@ function replyMessage(id,name,text){
     };
 
     const input = document.getElementById("input");
-
     input.value = "";
-
     input.focus();
-
 }
 
-function sendFile(event){
-
+function sendFile(event)
+{
     const file = event.target.files[0];
 
     if (!file)
@@ -1430,7 +1335,6 @@ function sendFile(event){
     const reader = new FileReader();
 
     reader.onload = function(){
-
         ws.send(JSON.stringify({
             type:"file",
             name:file.name,
@@ -1454,23 +1358,33 @@ function startKeepAlive(){
 
     if (keepAliveTimer)
     {
-        clearInterval(keepAliveTimer);
+        clearInterval(
+            keepAliveTimer
+        );
     }
 
-    keepAliveTimer = setInterval(()=>{
-
-        if(ws.readyState === WebSocket.OPEN)
-        {
+    function sendKeepAlive()
+    {
+        if (ws.readyState === WebSocket.OPEN){
             ws.send(JSON.stringify({
                 type:"keepAlive"
             }));
         }
+    }
 
-    }, 10 * 60 * 1000);
+    // 開始時に1回
+    sendKeepAlive();
+
+    // 5分ごと
+    keepAliveTimer =
+        setInterval(
+            sendKeepAlive,
+            5 * 60 * 1000
+        );
 }
 
-function editMessage(messageId, text){
-
+function editMessage(messageId, text)
+{
     editTarget = messageId;
 
     const input = document.getElementById("input");
@@ -1481,9 +1395,9 @@ function editMessage(messageId, text){
     input.focus();
 }
 
-function deleteMessage(messageId){
-
-    if(!confirm("このメッセージを削除しますか？")){
+function deleteMessage(messageId)
+{
+    if (!confirm("このメッセージを削除しますか？")){
         return;
     }
 
@@ -1493,11 +1407,10 @@ function deleteMessage(messageId){
         messageId:messageId
 
     }));
-
 }
 
-function toggleTaskForm(){
-
+function toggleTaskForm()
+{
     const form = document.getElementById("task-form");
 
     if (form.style.display === "none")
@@ -1510,75 +1423,57 @@ function toggleTaskForm(){
     }
 }
 
-function createTask(){
+function createTask()
+{
+    const input = document.getElementById("task-input");
+    const assignee = document.getElementById("task-assignee").value;
+    const text = input.value.trim();
 
-    const input =
-        document.getElementById("task-input");
-
-    const assignee =
-        document.getElementById(
-            "task-assignee"
-        ).value;
-
-    const text =
-        input.value.trim();
-
-    if(text === ""){
+    if (text === "")
+    {
         return;
     }
 
     ws.send(JSON.stringify({
-
         type:"createTask",
-
         text:text,
-
         assignee:assignee
-
     }));
 
     input.value = "";
 
-    document.getElementById(
-        "task-assignee"
-    ).value = "";
-
+    document.getElementById("task-assignee").value = "";
 }
 
-function toggleTask(taskId){
+function toggleTask(taskId)
+{
 
     ws.send(JSON.stringify({
-
         type:"toggleTask",
-
         taskId:taskId
-
     }));
 
 }
 
-function getTaskStatus(status){
+function getTaskStatus(status)
+{
 
-    if(status === "todo"){
-
+    if (status === "todo")
+    {
         return "⚪";
-
     }
 
-    if(status === "progress"){
-
+    if (status === "progress")
+    {
         return "🔵";
-
     }
 
-    if(status === "done"){
-
+    if (status === "done")
+    {
         return "☑";
-
     }
 
     return "⚪";
-
 }
 
 </script>

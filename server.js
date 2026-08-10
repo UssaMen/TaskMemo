@@ -248,21 +248,14 @@ wss.on("connection", (ws) => {
                 user.room,
                 {
                     type:"file",
-
                     id:user.id,
-
                     name:user.name,
-
                     fileName:data.name,
-
                     fileData:data.data
-
                 }
             );
 
-
             return;
-
         }
 
         if (data.type === "image")
@@ -321,7 +314,7 @@ wss.on("connection", (ws) => {
 
                 reactions[key]--;
 
-                if(reactions[key] <= 0)
+                if (reactions[key] <= 0)
                 {
                     delete reactions[key];
                 }
@@ -332,7 +325,7 @@ wss.on("connection", (ws) => {
                     data.emoji
                 );
 
-                if(!reactions[key])
+                if (!reactions[key])
                 {
                     reactions[key] = 0
                 }
@@ -465,15 +458,10 @@ wss.on("connection", (ws) => {
             const stampData = {
 
                 type:"stamp",
-
                 id:user.id,
-
                 name:user.name,
-
                 stamp:data.stamp,
-
                 room:user.room,
-
                 time:new Date().toLocaleTimeString(
                     "ja-JP",
                     {
@@ -481,23 +469,18 @@ wss.on("connection", (ws) => {
                         minute:"2-digit"
                     }
                 )
-
             };
-
 
             broadcastRoom(
                 user.room,
                 stampData
             );
 
-
             return;
-
         }
 
         if (data.type === "createTask")
         {
-
             const task = {
                 id:crypto.randomUUID(),
                 room:user.room,
@@ -518,12 +501,10 @@ wss.on("connection", (ws) => {
             );
 
             return;
-
         }
 
-        if(data.type === "toggleTask")
+        if (data.type === "toggleTask")
         {
-
             const task =
                 tasks.find(
                     task => task.id === data.taskId
@@ -534,14 +515,17 @@ wss.on("connection", (ws) => {
                 return;
             }
 
-            if(task.status === "todo"){
+            if (task.status === "todo")
+            {
 
                 task.status = "progress";
             }
-            else if(task.status === "progress"){
+            else if(task.status === "progress")
+            {
                 task.status = "done";
             }
-            else{
+            else
+            {
                 task.status = "todo";
             }
 
@@ -556,7 +540,7 @@ wss.on("connection", (ws) => {
             return;
         }
 
-        if(data.type === "editMessage")
+        if (data.type === "editMessage")
         {
 
             const target =
@@ -565,12 +549,12 @@ wss.on("connection", (ws) => {
                         msg.messageId === data.messageId
                 );
 
-            if(!target){
+            if (!target){
                 return;
             }
 
             // 自分のメッセージだけ編集可能
-            if(target.id !== user.id){
+            if (target.id !== user.id){
 
                 ws.send(JSON.stringify({
 
@@ -583,8 +567,7 @@ wss.on("connection", (ws) => {
                 return;
             }
 
-            target.text =
-                data.text;
+            target.text = data.text;
 
             broadcastRoom(
                 target.room,
@@ -600,23 +583,24 @@ wss.on("connection", (ws) => {
             return;
         }
 
-        if(data.type === "deleteMessage")
+        if (data.type === "deleteMessage")
         {
-
             const index =
                 messages.findIndex(
                     msg =>
                         msg.messageId === data.messageId
                 );
 
-            if(index === -1){
+            if (index === -1)
+            {
                 return;
             }
 
             const target = messages[index];
 
             // 自分のメッセージだけ削除可能
-            if(target.id !== user.id){
+            if (target.id !== user.id)
+            {
                 ws.send(JSON.stringify({
                     type:"error",
                     message:"自分のメッセージだけ削除できます"
@@ -674,8 +658,6 @@ wss.on("connection", (ws) => {
         }
     });
 
-
-
     ws.on("close", () => {
 
         const user = users.get(ws);
@@ -707,7 +689,8 @@ function broadcastRoom(room, data)
     });
 }
 
-function broadcastBoard(room, data){
+function broadcastBoard(room, data)
+{
     boardClients.forEach((client)=>{
         if (client.readyState === WebSocket.OPEN &&
             client.boardRoom === room &&
