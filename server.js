@@ -517,8 +517,43 @@ wss.on("connection", (ws) => {
             );
 
             return;
-            
+
         }
+
+        if(data.type === "toggleTask")
+{
+
+    const task =
+        tasks.find(
+            task => task.id === data.taskId
+        );
+
+
+    if(!task){
+
+        return;
+
+    }
+
+
+    task.completed =
+        !task.completed;
+
+
+    broadcastRoom(
+        task.room,
+        {
+            type:"taskUpdate",
+
+            task:task
+
+        }
+    );
+
+
+    return;
+
+}
 
         if (data.type === "message")
         {

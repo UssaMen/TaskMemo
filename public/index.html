@@ -405,6 +405,14 @@ select {
 
 }
 
+.task-item.completed {
+
+    opacity:0.5;
+
+    text-decoration:line-through;
+
+}
+
 </style>
 
 </head>
@@ -708,23 +716,74 @@ ws.onmessage = function(event)
         return;
     }
 
-    if(data.type === "task")
+    if (data.type === "task")
     {
 
-        const taskList = document.getElementById("task-list");
-        const task = data.task;
+        const taskList =
+            document.getElementById("task-list");
+        const task =
+            data.task;
 
         taskList.innerHTML += `
+
             <div
                 class="task-item"
                 id="task-${task.id}"
+                onclick="toggleTask('${task.id}')"
+                style="cursor:pointer;"
             >
-                ☐ ${task.text}
+
+                <span id="task-status-${task.id}">
+                    ${task.completed ? "☑" : "☐"}
+                </span>
+                ${task.text}
                 <div class="time">
                     作成者：${task.name}
                 </div>
             </div>
         `;
+
+        return;
+    }
+
+    if(data.type === "taskUpdate")
+    {
+
+        const task =
+            data.task;
+
+        const status =
+            document.getElementById(
+                "task-status-" + task.id
+            );
+
+        if(status){
+
+            status.innerHTML =
+                task.completed
+                ? "☑"
+                : "☐";
+
+            const taskElement =
+                document.getElementById(
+                    "task-" + task.id
+                );
+
+            if(taskElement){
+                if(task.completed){
+
+                    taskElement.classList.add(
+                        "completed"
+                    );
+                }else{
+
+                    taskElement.classList.remove(
+                        "completed"
+                    );
+
+                }
+            }
+        }
 
         return;
     }
@@ -1337,6 +1396,18 @@ function createTask(){
     }));
 
     input.value = "";
+}
+
+function toggleTask(taskId){
+
+    ws.send(JSON.stringify({
+
+        type:"toggleTask",
+
+        taskId:taskId
+
+    }));
+
 }
 
 </script>
