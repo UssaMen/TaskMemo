@@ -528,21 +528,28 @@ wss.on("connection", (ws) => {
                     task => task.id === data.taskId
                 );
 
-
             if(!task){
+
                 return;
+
             }
 
-            task.completed =
-                !task.completed;
+            if(task.status === "todo"){
+
+                task.status = "progress";
+            }
+            else if(task.status === "progress"){
+                task.status = "done";
+            }
+            else{
+                task.status = "todo";
+            }
 
             broadcastRoom(
                 task.room,
                 {
                     type:"taskUpdate",
-
                     task:task
-
                 }
             );
 

@@ -750,8 +750,7 @@ ws.onmessage = function(event)
     if(data.type === "taskUpdate")
     {
 
-        const task =
-            data.task;
+        const task = data.task;
 
         const status =
             document.getElementById(
@@ -759,30 +758,26 @@ ws.onmessage = function(event)
             );
 
         if(status){
-
             status.innerHTML =
-                task.completed
-                ? "☑"
-                : "☐";
-
-            const taskElement =
-                document.getElementById(
-                    "task-" + task.id
+                getTaskStatus(
+                    task.status
                 );
+        }
 
-            if(taskElement){
-                if(task.completed){
+        const taskElement =
+            document.getElementById(
+                "task-" + task.id
+            );
 
-                    taskElement.classList.add(
-                        "completed"
-                    );
-                }else{
-
-                    taskElement.classList.remove(
-                        "completed"
-                    );
-
-                }
+        if(taskElement){
+            if(task.status === "done"){
+                taskElement.classList.add(
+                    "completed"
+                );
+            }else{
+                taskElement.classList.remove(
+                    "completed"
+                );
             }
         }
 
