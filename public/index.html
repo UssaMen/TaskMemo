@@ -1017,6 +1017,29 @@ ws.onmessage = function(event)
                         ↩
                     </button>
 
+                    ${
+                        data.id === myId
+                        ?
+                        `
+                        <button
+                            onclick="editMessage(
+                                '${data.messageId}',
+                                \`${data.text}\`
+                            )">
+                            ✏️
+                        </button>
+
+                        <button
+                            onclick="deleteMessage(
+                                '${data.messageId}'
+                            )">
+                            🗑️
+                        </button>
+                        `
+                        :
+                        ""
+                    }
+
                 </div>
 
             </div>
@@ -1390,6 +1413,25 @@ function startKeepAlive(){
         }
 
     }, 10 * 60 * 1000);
+}
+
+function editMessage(messageId, text){
+
+    console.log(
+        "編集開始",
+        messageId,
+        text
+    );
+
+}
+
+function deleteMessage(messageId){
+
+    console.log(
+        "削除",
+        messageId
+    );
+
 }
 
 function toggleTaskForm(){
