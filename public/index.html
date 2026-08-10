@@ -340,6 +340,71 @@ select {
 
 }
 
+#tasks {
+
+    background:#252526;
+
+    border:1px solid #3c3c3c;
+
+    padding:8px;
+
+    margin-bottom:5px;
+
+}
+
+
+.task-header {
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    font-weight:bold;
+
+}
+
+
+#task-list {
+
+    margin-top:5px;
+
+}
+
+
+.task-item {
+
+    background:#333;
+
+    border:1px solid #555;
+
+    padding:6px;
+
+    margin-top:4px;
+
+    border-radius:4px;
+
+}
+
+
+#task-form {
+
+    display:flex;
+
+    gap:5px;
+
+    margin-top:6px;
+
+}
+
+
+#task-input {
+
+    flex:1;
+
+}
+
 </style>
 
 </head>
@@ -392,6 +457,25 @@ select {
     </div>
     <div class="chat-area">
         <div id="pinned"></div>
+        <div id="tasks">
+            <div class="task-header">
+                ✅ TASK
+                <button onclick="toggleTaskForm()">
+                    ＋
+                </button>
+            </div>
+            <div id="task-list"></div>
+            <div id="task-form" style="display:none;">
+                <input
+                    id="task-input"
+                    type="text"
+                    placeholder="タスクを入力"
+                >
+                <button onclick="createTask()">
+                    追加
+                </button>
+            </div>
+        </div>
         <div id="messages"></div>
         <div id="typing"></div>
         <div class="input-area">
@@ -624,14 +708,32 @@ ws.onmessage = function(event)
         return;
     }
 
-    if(data.type === "file")
+    if(data.type === "task")
     {
 
-        const messages =
-            document.getElementById("messages");
+        const taskList = document.getElementById("task-list");
+        const task = data.task;
+
+        taskList.innerHTML += `
+            <div
+                class="task-item"
+                id="task-${task.id}"
+            >
+                ☐ ${task.text}
+                <div class="time">
+                    作成者：${task.name}
+                </div>
+            </div>
+        `;
+
+        return;
+    }
+
+    if (data.type === "file")
+    {
+        const messages = document.getElementById("messages");
 
         messages.innerHTML += `
-
         <div class="message left">
             <div>
                 <div class="name">
@@ -649,9 +751,7 @@ ws.onmessage = function(event)
         `;
 
         scrollToBottom();
-
         return;
-
     }
 
     if (data.type === "image")
@@ -1205,6 +1305,38 @@ function startKeepAlive(){
         }
 
     }, 10 * 60 * 1000);
+}
+
+function toggleTaskForm(){
+
+    const form = document.getElementById("task-form");
+
+    if (form.style.display === "none")
+    {
+        form.style.display = "flex";
+    }
+    else
+    {
+        form.style.display = "none";
+    }
+}
+
+function createTask(){
+
+    const input = document.getElementById("task-input");
+    const text = input.value.trim();
+
+    if (text === "")
+    {
+        return;
+    }
+
+    ws.send(JSON.stringify({
+        type:"createTask",
+        text:text
+    }));
+
+    input.value = "";
 }
 
 </script>

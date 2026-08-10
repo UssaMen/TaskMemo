@@ -16,6 +16,7 @@ let boardHistory = [];
 let boardClients = [];
 let reactions = {};
 let reactionUsers = {};
+let tasks = [];
 
 //ユーザー追加
 const accounts = {
@@ -492,6 +493,31 @@ wss.on("connection", (ws) => {
 
             return;
 
+        }
+
+        if (data.type === "createTask")
+        {
+
+            const task = {
+                id:crypto.randomUUID(),
+                room:user.room,
+                text:data.text,
+                name:user.name,
+                completed:false
+            };
+
+            tasks.push(task);
+
+            broadcastRoom(
+                user.room,
+                {
+                    type:"task",
+                    task:task
+                }
+            );
+
+            return;
+            
         }
 
         if (data.type === "message")
