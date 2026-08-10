@@ -614,6 +614,7 @@ const ws = new WebSocket(location.origin.replace("http", "ws"));
 let myName = "";
 let myId = "";
 let replyTarget = null;
+let editTarget = null;
 
 ws.onopen = function()
 {
@@ -1075,6 +1076,27 @@ function sendMessage()
         return;
     }
 
+    if(editTarget)
+    {
+
+        ws.send(JSON.stringify({
+
+            type:"editMessage",
+
+            messageId:editTarget,
+
+            text:input.trim()
+
+        }));
+
+        editTarget = null;
+
+        document.getElementById("input").value="";
+        document.getElementById("input").style.height="20px";
+
+        return;
+    }
+
     ws.send(JSON.stringify({
 
         type:"message",
@@ -1417,12 +1439,14 @@ function startKeepAlive(){
 
 function editMessage(messageId, text){
 
-    console.log(
-        "編集開始",
-        messageId,
-        text
-    );
+    editTarget = messageId;
 
+    const input = document.getElementById("input");
+
+    input.value = text;
+    autoResize(input);
+
+    input.focus();
 }
 
 function deleteMessage(messageId){
