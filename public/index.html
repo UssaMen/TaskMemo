@@ -734,8 +734,9 @@ ws.onmessage = function(event)
             >
 
                 <span id="task-status-${task.id}">
-                    ${task.completed ? "☑" : "☐"}
+                    ${getTaskStatus(task.status)}
                 </span>
+
                 ${task.text}
                 <div class="time">
                     作成者：${task.name}
@@ -1407,6 +1408,30 @@ function toggleTask(taskId){
         taskId:taskId
 
     }));
+
+}
+
+function getTaskStatus(status){
+
+    if(status === "todo"){
+
+        return "⚪";
+
+    }
+
+    if(status === "progress"){
+
+        return "🔵";
+
+    }
+
+    if(status === "done"){
+
+        return "☑";
+
+    }
+
+    return "⚪";
 
 }
 

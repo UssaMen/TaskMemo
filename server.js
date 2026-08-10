@@ -503,7 +503,7 @@ wss.on("connection", (ws) => {
                 room:user.room,
                 text:data.text,
                 name:user.name,
-                completed:false
+                status:"todo"
             };
 
             tasks.push(task);
@@ -521,39 +521,33 @@ wss.on("connection", (ws) => {
         }
 
         if(data.type === "toggleTask")
-{
-
-    const task =
-        tasks.find(
-            task => task.id === data.taskId
-        );
-
-
-    if(!task){
-
-        return;
-
-    }
-
-
-    task.completed =
-        !task.completed;
-
-
-    broadcastRoom(
-        task.room,
         {
-            type:"taskUpdate",
 
-            task:task
+            const task =
+                tasks.find(
+                    task => task.id === data.taskId
+                );
 
+
+            if(!task){
+                return;
+            }
+
+            task.completed =
+                !task.completed;
+
+            broadcastRoom(
+                task.room,
+                {
+                    type:"taskUpdate",
+
+                    task:task
+
+                }
+            );
+
+            return;
         }
-    );
-
-
-    return;
-
-}
 
         if (data.type === "message")
         {
