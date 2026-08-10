@@ -670,6 +670,21 @@ ws.onmessage = function(event)
         return;
     }
 
+    if(data.type === "deleteMessage")
+    {
+
+        const message =
+            document.getElementById(
+                "message-" + data.messageId
+            );
+
+        if(message){
+            message.remove();
+        }
+
+        return;
+    }
+
     if (data.type === "reaction")
     {
         const area =
@@ -1468,10 +1483,16 @@ function editMessage(messageId, text){
 
 function deleteMessage(messageId){
 
-    console.log(
-        "削除",
-        messageId
-    );
+    if(!confirm("このメッセージを削除しますか？")){
+        return;
+    }
+
+    ws.send(JSON.stringify({
+
+        type:"deleteMessage",
+        messageId:messageId
+
+    }));
 
 }
 

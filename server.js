@@ -600,6 +600,46 @@ wss.on("connection", (ws) => {
             return;
         }
 
+        if(data.type === "deleteMessage")
+        {
+
+            const index =
+                messages.findIndex(
+                    msg =>
+                        msg.messageId === data.messageId
+                );
+
+            if(index === -1){
+                return;
+            }
+
+            const target = messages[index];
+
+            // 自分のメッセージだけ削除可能
+            if(target.id !== user.id){
+                ws.send(JSON.stringify({
+                    type:"error",
+                    message:"自分のメッセージだけ削除できます"
+                }));
+                return;
+            }
+
+            messages.splice(
+                index,
+                1
+            );
+
+            broadcastRoom(
+                target.room,
+                {
+                    type:"deleteMessage",
+                    messageId:
+                        target.messageId
+                }
+            );
+            return;
+        }
+
         if (data.type === "message")
         {
             const messageData = {
