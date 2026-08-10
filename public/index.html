@@ -479,6 +479,26 @@ select {
                     type="text"
                     placeholder="タスクを入力"
                 >
+                <select id="task-assignee">
+                    <option value="">
+                        担当者なし
+                    </option>
+                    <option value="TSUJIMURA">
+                        TSUJIMURA
+                    </option>
+                    <option value="INO">
+                        INO
+                    </option>
+                    <option value="MIYUKI">
+                        MIYUKI
+                    </option>
+                    <option value="NENE">
+                        NENE
+                    </option>
+                    <option value="SHINO">
+                        SHINO
+                    </option>
+                </select>
                 <button onclick="createTask()">
                     追加
                 </button>
@@ -740,6 +760,9 @@ ws.onmessage = function(event)
                 ${task.text}
                 <div class="time">
                     作成者：${task.name}
+                </div>
+                <div class="time">
+                    担当：${task.assignee || "なし"}
                 </div>
             </div>
         `;
@@ -1378,20 +1401,37 @@ function toggleTaskForm(){
 
 function createTask(){
 
-    const input = document.getElementById("task-input");
-    const text = input.value.trim();
+    const input =
+        document.getElementById("task-input");
 
-    if (text === "")
-    {
+    const assignee =
+        document.getElementById(
+            "task-assignee"
+        ).value;
+
+    const text =
+        input.value.trim();
+
+    if(text === ""){
         return;
     }
 
     ws.send(JSON.stringify({
+
         type:"createTask",
-        text:text
+
+        text:text,
+
+        assignee:assignee
+
     }));
 
     input.value = "";
+
+    document.getElementById(
+        "task-assignee"
+    ).value = "";
+
 }
 
 function toggleTask(taskId){

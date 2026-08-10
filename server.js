@@ -503,6 +503,7 @@ wss.on("connection", (ws) => {
                 room:user.room,
                 text:data.text,
                 name:user.name,
+                assignee:data.assignee,
                 status:"todo"
             };
 
@@ -528,11 +529,9 @@ wss.on("connection", (ws) => {
                     task => task.id === data.taskId
                 );
 
-            if(!task){
-
+            if (!task)
+            {
                 return;
-
-
             }
 
             if(task.status === "todo"){
