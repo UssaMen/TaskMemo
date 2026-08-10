@@ -654,29 +654,21 @@ ws.onmessage = function(event)
 
     if(data.type === "editMessage")
     {
-        const message =
+        const text =
             document.getElementById(
-                "message-" + data.messageId
+                "message-text-" + data.messageId
             );
 
-        if(message){
-            const balloon =
-                message.querySelector(
-                    ".balloon"
+        if(text){
+            text.innerHTML =
+                data.text.replace(
+                    /\n/g,
+                    "<br>"
                 );
-
-            if(balloon){
-                balloon.innerHTML =
-                    data.text.replace(
-                        /\n/g,
-                        "<br>"
-                    );
-            }
         }
 
         return;
     }
-
 
     if (data.type === "reaction")
     {
@@ -1003,9 +995,9 @@ ws.onmessage = function(event)
                 :
                 ""
                 }
-
-                ${data.text.replace(/\n/g, "<br>")}
-
+                <span id="message-text-${data.messageId}">
+                    ${data.text.replace(/\n/g, "<br>")}
+                </span>
                 <div class="time">
                     ${data.time || ""}
                     <span id="read-${data.messageId}"></span>
