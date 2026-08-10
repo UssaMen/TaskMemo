@@ -807,21 +807,28 @@ ws.onmessage = function(event)
         return;
     }
 
-    if (data.type === "file")
+    if(data.type === "file")
     {
+
         const messages = document.getElementById("messages");
+        let position = "left";
+
+        if(data.id === myId)
+        {
+            position = "right";
+        }
 
         messages.innerHTML += `
-        <div class="message left">
+        <div class="message ${position}">
             <div>
                 <div class="name">
                     📎 ${data.name}
                 </div>
                 <div class="balloon">
                     <a
-                    href="${data.fileData}"
-                    download="${data.fileName}">
-                    📎 ${data.fileName}
+                        href="${data.fileData}"
+                        download="${data.fileName}">
+                        📎 ${data.fileName}
                     </a>
                 </div>
             </div>
