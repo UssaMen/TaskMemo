@@ -24,7 +24,7 @@ const accounts = {
     "TSUJIMURA":{
         password:"a9535vpax",
         role:"admin",
-        rooms:["room1","room2","room3"]
+        rooms:["room1","room2","room3","room4","KEEPALIVE"]
     },
 
     //利用者1
@@ -41,11 +41,18 @@ const accounts = {
         rooms:["room2"]
     },
 
-        //利用者2
+    //利用者3
     "NENE":{
         password:"0616",
         role:"user",
         rooms:["room2","room3"]
+    },
+
+    //利用者4
+    "SHINO":{
+        password:"130931",
+        role:"user",
+        rooms:["room4"]
     }
 
 };
@@ -73,6 +80,41 @@ wss.on("connection", (ws) => {
 
         const data = JSON.parse(message);
         const user = users.get(ws);
+
+        if (data.type === "keepAlive")
+        {
+
+            if (user.role !== "admin")
+            {
+                return;
+            }
+
+            const keepAliveMessage = {
+
+                type:"message",
+                messageId:crypto.randomUUID(),
+                room:"KEEPALIVE",
+                id:user.id,
+                name:user.name,
+                text:"keepalive",
+                urgent:false,
+                replyTo:null,
+                replyName:null,
+                replyText:null,
+                time:new Date().toLocaleTimeString("ja-JP", {
+                    timeZone:"Asia/Tokyo",
+                    hour:"2-digit",
+                    minute:"2-digit"
+                })
+            };
+
+            broadcastRoom(
+                "KEEPALIVE",
+                keepAliveMessage
+            );
+
+            return;
+        }
 
         if ( data.type === "start" ||
             data.type === "draw")

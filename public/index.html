@@ -466,6 +466,10 @@ const rooms = [
     {
         id:"room3",
         name:"🔒 ROOM3"
+    },
+    {
+        id:"room4",
+        name:"🔒 ROOM4"
     }
 ];
 
@@ -1066,13 +1070,14 @@ function joinRoom()
     document.getElementById("name").disabled=true;
     document.getElementById("room").disabled=true;
 
-    if(name === "TSUJIMURA"){
+    if (name === "TSUJIMURA")
+    {
+        document.getElementById(
+            "clear-chat-button"
+        ).style.display = "block";
 
-    document.getElementById(
-        "clear-chat-button"
-    ).style.display = "block";
-
-}
+        startKeepAlive();
+    }
 
 }
 
@@ -1098,12 +1103,10 @@ function reaction(messageId, emoji)
 
 function clearChat(){
 
-    if(!confirm("チャット履歴を削除しますか？")){
-
+    if (!confirm("チャット履歴を削除しますか？"))
+    {
         return;
-
     }
-
 
     ws.send(JSON.stringify({
 
@@ -1137,21 +1140,13 @@ function toggleStamp(){
 
 function replyMessage(id,name,text){
 
-
     replyTarget = {
-
         messageId:id,
-
         name:name,
-
         text:text
-
     };
 
-
-    const input =
-        document.getElementById("input");
-
+    const input = document.getElementById("input");
 
     input.value =
         "↩ " +
@@ -1160,50 +1155,59 @@ function replyMessage(id,name,text){
         text +
         "\n\n";
 
-
     input.focus();
 
 }
 
 function sendFile(event){
 
-    const file =
-        event.target.files[0];
+    const file = event.target.files[0];
 
-
-    if(!file){
-
+    if (!file)
+    {
         return;
-
     }
 
-
-    const reader =
-        new FileReader();
-
+    const reader = new FileReader();
 
     reader.onload = function(){
 
-
         ws.send(JSON.stringify({
-
             type:"file",
-
             name:file.name,
-
             data:reader.result
-
         }));
-
-
     };
 
-
     reader.readAsDataURL(file);
-
-
     event.target.value="";
 
+}
+
+let keepAliveTimer = null;
+
+function startKeepAlive(){
+
+    if (myName !== "TSUJIMURA")
+    {
+        return;
+    }
+
+    if (keepAliveTimer)
+    {
+        clearInterval(keepAliveTimer);
+    }
+
+    keepAliveTimer = setInterval(()=>{
+
+        if(ws.readyState === WebSocket.OPEN)
+        {
+            ws.send(JSON.stringify({
+                type:"keepAlive"
+            }));
+        }
+
+    }, 10 * 60 * 1000);
 }
 
 </script>
