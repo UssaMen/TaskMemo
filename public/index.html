@@ -652,6 +652,31 @@ ws.onmessage = function(event)
         new Notification("TASK Workspace",{body:"💡"});
     }
 
+    if(data.type === "editMessage")
+    {
+        const message =
+            document.getElementById(
+                "message-" + data.messageId
+            );
+
+        if(message){
+            const balloon =
+                message.querySelector(
+                    ".balloon"
+                );
+
+            if(balloon){
+                balloon.innerHTML =
+                    data.text.replace(
+                        /\n/g,
+                        "<br>"
+                    );
+            }
+        }
+
+        return;
+    }
+
 
     if (data.type === "reaction")
     {
@@ -820,7 +845,7 @@ ws.onmessage = function(event)
         }
 
         messages.innerHTML += `
-        <div class="message ${position}">
+        <div class="message ${position}" id="message-${data.messageId}">
             <div>
                 <div class="name">
                     📎 ${data.name}
@@ -853,7 +878,7 @@ ws.onmessage = function(event)
 
         messages.innerHTML += `
 
-        <div class="message ${position}">
+        <div class="message ${position}" id="message-${data.messageId}">
             <div>
                 <div class="name">
                     🖼️ ${data.name}
@@ -950,7 +975,7 @@ ws.onmessage = function(event)
     }
 
     messages.innerHTML += `
-    <div class="message ${position}">
+    <div class="message ${position}" id="message-${data.messageId}">
         <div>
             <div class="name">
                 ${data.name}

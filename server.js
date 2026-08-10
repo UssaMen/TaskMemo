@@ -556,6 +556,50 @@ wss.on("connection", (ws) => {
             return;
         }
 
+        if(data.type === "editMessage")
+        {
+
+            const target =
+                messages.find(
+                    msg =>
+                        msg.messageId === data.messageId
+                );
+
+            if(!target){
+                return;
+            }
+
+            // 自分のメッセージだけ編集可能
+            if(target.id !== user.id){
+
+                ws.send(JSON.stringify({
+
+                    type:"error",
+
+                    message:"自分のメッセージだけ編集できます"
+
+                }));
+
+                return;
+            }
+
+            target.text =
+                data.text;
+
+            broadcastRoom(
+                target.room,
+                {
+                    type:"editMessage",
+                    messageId:
+                        target.messageId,
+                    text:
+                        target.text
+                }
+            );
+
+            return;
+        }
+
         if (data.type === "message")
         {
             const messageData = {
