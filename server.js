@@ -130,6 +130,14 @@ wss.on("connection", (ws) => {
             return;
         }
 
+        // 描画終了も同じホワイトボードの参加者へ転送する。
+        // これがないと、他の参加者の「描画中」表示が消えない。
+        if (data.type === "stop")
+        {
+            broadcastBoard(data.room, data);
+            return;
+        }
+
         if (data.type === "clear")
         {
             boardHistory =
@@ -674,6 +682,7 @@ wss.on("connection", (ws) => {
         }
 
         users.delete(ws);
+        boardClients = boardClients.filter(client => client !== ws);
         sendUserList();
 
     });
@@ -683,7 +692,8 @@ wss.on("connection", (ws) => {
 function broadcastRoom(room, data)
 {
     users.forEach((user, client)=>{
-        if(user.room === room){
+        if (user.room === room &&
+            client.readyState === WebSocket.OPEN){
             client.send(JSON.stringify(data));
         }
     });
@@ -716,10 +726,13 @@ function sendUserList()
             }
         });
 
-        client.send(JSON.stringify({
-            type:"users",
-            users:list
-        }));
+        if (client.readyState === WebSocket.OPEN)
+        {
+            client.send(JSON.stringify({
+                type:"users",
+                users:list
+            }));
+        }
     });
 }
 

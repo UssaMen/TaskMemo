@@ -92,8 +92,9 @@ button {
 
 <script>
 
+const params = new URLSearchParams(location.search);
+const room = params.get("room");
 const ws = new WebSocket(location.origin.replace("http","ws"));
-
 const clientId = crypto.randomUUID();
 
 ws.onopen = function(){
@@ -106,10 +107,6 @@ ws.onopen = function(){
 
 const canvas = document.getElementById("board");
 const ctx = canvas.getContext("2d");
-
-const params = new URLSearchParams(location.search);
-
-const room = params.get("room");
 
 let drawing = false;
 let currentColor = "black";
