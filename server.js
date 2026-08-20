@@ -525,7 +525,6 @@ wss.on("connection", (ws) => {
 
             if (task.status === "todo")
             {
-
                 task.status = "progress";
             }
             else if(task.status === "progress")
